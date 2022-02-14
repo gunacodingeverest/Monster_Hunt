@@ -1,25 +1,62 @@
-import logo from './logo.svg';
-import './App.css';
+import "./App.css";
 
-function App() {
+import React, { useEffect, useState } from "react";
+import CardComponent from "./components/CardComponent";
+import Grid from "@mui/material/Grid";
+import SearchBar from "./components/SearchBar";
+
+const App = () => {
+  const [monster, setMonster] = useState([]);
+  const [search, setSearch] = useState([]);
+  const filteredMons = monster.filter((monster) =>
+    monster.name
+      .toString()
+      .toLowerCase()
+      .includes(search.toString().toLowerCase())
+  );
+
+  useEffect(() => {
+    fetch("https://jsonplaceholder.typicode.com/users")
+      .then((response) => response.json())
+      .then((edited) => setMonster(edited));
+  }, []);
+  console.log(search);
+  const handleOnChange = (e) => {
+    const { name, value } = e.target;
+    setSearch(value);
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <h1
+        style={{
+          textAlign: "center",
+          justifyContent: "center",
+          alignContent: "center",
+          margin: "40px",
+          fontFamily: "Bigelow Rules",
+          fontSize: "6rem",
+          color: "green",
+        }}
+      >
+        Monster Hunt
+      </h1>
+      <SearchBar handleOnChange={handleOnChange} />
+      <Grid
+        container
+        spacing={2}
+        direction="row"
+        justify="center"
+        alignItems="center"
+      >
+        {filteredMons.map((monst) => (
+          <Grid item xs={12} sm={6} md={4} lg={3}>
+            <CardComponent monst={monst} />
+          </Grid>
+        ))}
+      </Grid>
     </div>
   );
-}
+};
 
 export default App;
